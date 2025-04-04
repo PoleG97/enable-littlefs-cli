@@ -1,0 +1,100 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "🏗️ Build firmware (solo app)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-Command",
+        "& '__EXPORT_SCRIPT__'; idf.py build"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🏗️ Build con LittleFS (LFS_BUILD=1)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-Command",
+        "& '__EXPORT_SCRIPT__'; idf.py -D LFS_BUILD=1 build"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🧪 Flash solo firmware (app-flash)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-Command",
+        "& '__EXPORT_SCRIPT__'; idf.py -p __PORT__ app-flash"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "📤 Flash solo archivos LittleFS",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-Command",
+        "& '__EXPORT_SCRIPT__'; idf.py -p __PORT__ __PARTITION_LABEL__-flash"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "💣 Flash completo (firmware + LittleFS)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-Command",
+        "& '__EXPORT_SCRIPT__'; idf.py -p __PORT__ -D LFS_BUILD=1 flash"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🖥️ Monitor serie",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-Command",
+        "& '__EXPORT_SCRIPT__'; idf.py -p __PORT__ monitor"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "🧼 Borrado completo de la flash",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-Command",
+        "& '__EXPORT_SCRIPT__'; idf.py -p __PORT__ erase-flash"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
