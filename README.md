@@ -6,7 +6,7 @@ This project provides a set of tools to **quickly configure a LittleFS partition
 - ✅ Generation of `tasks.json` for Visual Studio Code
 - ✅ Insertion of LittleFS support into `CMakeLists.txt`
 
-> ⚠️ This script is intended for ESP-IDF projects using CMake.  
+> [!WARNING]  This script is intended for ESP-IDF projects using CMake.  
 > Currently supported only on UNIX-like environments (Linux, WSL, Git Bash).
 
 ---
@@ -46,6 +46,7 @@ partition_dir = littlefs_data
 platform = windows
 export_script = C:\Users\YOUR_USER\Espressif\v5.4\esp-idf\export.ps1
 ```
+> [!IMPORTANT]  
 > Change `export_script` with your path, It'll works on linux too
 
 ### Parameters
@@ -64,7 +65,8 @@ Run the script by passing your ESP-IDF project path:
 ./enable_littlefs.sh /path/to/your/project
 ```
 
-> ![TIP] If you create an alias to this script or include it in your path, you can run it from your project directory using . as the path.
+> [!TIP]
+> If you create an alias to this script or include it in your path, you can run it from your project directory using . as the path.
 
 ## This script:
 
