@@ -1,10 +1,10 @@
 {
-  "label": "🔗 Flash solo archivos LittleFS - __TAG__",
+  "label": "🔗 Flash LittleFS files - ${TAG}",
   "type": "shell",
-  "command": "__SHELL__",
+  "command": "${SHELL}",
   "args": [
     "-Command",
-    "& '__EXPORT_SCRIPT__'; idf.py -p __PORT__ __PARTITION_LABEL__-flash"
+    "& '${EXPORT_SCRIPT}'; idf.py -p ${PORT} ${PARTITION_LABEL}-flash"
   ],
   "options": {
     "cwd": "${workspaceFolder}"
