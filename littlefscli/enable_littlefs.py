@@ -22,7 +22,7 @@ def main():
         if len(sys.argv) < 3:
             print("❌ Error: You must specify a destination path for --copy.")
             sys.exit(1)
-            
+
         destination_path = Path(sys.argv[2]).resolve()
         source_config = Path(__file__).parent / "config.ini"
 
@@ -118,7 +118,8 @@ def main():
         else:
             print(f"📦 Directory already exists: {directory}")
 
-        rendered_task = partition_template.safe_substitute(
+        # Renderizar las tareas desde la plantilla
+        rendered_tasks = partition_template.safe_substitute(
             SHELL=shell_cmd,
             PORT=port_var,
             EXPORT_SCRIPT=escaped_export_script,
@@ -127,7 +128,13 @@ def main():
             PARTITION_LABEL=label,
             TAG=tag
         )
-        final_tasks.append(json.loads(rendered_task))
+
+        # Convertir las tareas renderizadas en una lista de JSON
+        tasks = json.loads(rendered_tasks)
+        if isinstance(tasks, list):
+            final_tasks.extend(tasks)  # Añadir todas las tareas al archivo final
+        else:
+            final_tasks.append(tasks)  # En caso de que sea una sola tarea
 
         cmake_append += f'    littlefs_create_partition_image({label} "{directory}" FLASH_AS_IMAGE)\n'
 
