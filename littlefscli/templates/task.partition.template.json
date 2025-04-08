@@ -3,8 +3,8 @@
   "type": "shell",
   "command": "${SHELL}",
   "args": [
-    "-Command",
-    "& '${EXPORT_SCRIPT}'; idf.py -p ${PORT} ${PARTITION_LABEL}-flash"
+    "${COMMAND_FLAG}",
+    "${EXPORT_WRAPPER} '${EXPORT_SCRIPT}'; idf.py -p ${PORT} ${PARTITION_LABEL}-flash"
   ],
   "options": {
     "cwd": "${workspaceFolder}"

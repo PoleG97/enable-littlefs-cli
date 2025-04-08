@@ -4,8 +4,8 @@
     "type": "shell",
     "command": "${SHELL}",
     "args": [
-      "-Command",
-      "& '${EXPORT_SCRIPT}'; idf.py build"
+      "${COMMAND_FLAG}",
+      "${EXPORT_WRAPPER} '${EXPORT_SCRIPT}'; idf.py build"
     ],
     "options": {
       "cwd": "${workspaceFolder}"
@@ -21,8 +21,8 @@
     "type": "shell",
     "command": "${SHELL}",
     "args": [
-      "-Command",
-      "$env:LFS_BUILD='1'; & '${EXPORT_SCRIPT}'; idf.py -p ${PORT} flash"
+      "${COMMAND_FLAG}",
+      "$env:LFS_BUILD='1'; ${EXPORT_WRAPPER} '${EXPORT_SCRIPT}'; idf.py -p ${PORT} flash"
     ],
     "options": {
       "cwd": "${workspaceFolder}"
