@@ -4,6 +4,23 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BASE_TEMPLATE="${SCRIPT_DIR}/tasks.base.template.json"
 PARTITION_TEMPLATE="${SCRIPT_DIR}/task.partition.template.json"
 
+# Help
+show_help() {
+    echo "Uso: $0 /ruta/al/proyecto [archivo_config.ini]"
+    echo ""
+    echo "Este script genera automáticamente tasks.json y añade soporte a LittleFS en CMakeLists.txt."
+    echo ""
+    echo "Parámetros:"
+    echo "  /ruta/al/proyecto        Ruta al directorio del proyecto ESP-IDF"
+    echo "  [archivo_config.ini]     (Opcional) Ruta al archivo .ini de configuración a usar"
+    echo ""
+    echo "Si no se proporciona el segundo parámetro, se usará el archivo config.ini que esté junto al script."
+    exit 0
+}
+
+# Mostrar ayuda
+[[ "$1" == "--help" || "$1" == "-h" ]] && show_help
+
 # Verify if the script has proyect path as argument
 if [ -z "$1" ]; then
     echo "❌ Uso: $0 /ruta/al/proyecto"
