@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import os
+import shutil
 import sys
 import json
 import configparser
@@ -12,7 +12,28 @@ def escape_json_string(value: str) -> str:
 def main():
     if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
         print(f"Usage: {Path(sys.argv[0]).name} /path/to/project [config_file.ini]")
+        print("Options:")
+        print("  --copy /path/to/destination  Copies the default config.ini to the specified path.")
         print("Generates VSCode tasks.json and adds LittleFS support to CMakeLists.txt.")
+        sys.exit(0)
+
+    # Manage command --copy
+    if sys.argv[1] == "--copy":
+        if len(sys.argv) < 3:
+            print("❌ Error: You must specify a destination path for --copy.")
+            sys.exit(1)
+            
+        destination_path = Path(sys.argv[2]).resolve()
+        source_config = Path(__file__).parent / "config.ini"
+
+        if not source_config.exists():
+            print(f"❌ Error: Default config.ini not found at {source_config}")
+            sys.exit(1)
+        try:
+            shutil.copy(source_config, destination_path)
+            print(f"✅ config.ini copied to: {destination_path}")
+        except Exception as e:
+            print(f"❌ Error copying config.ini: {e}")
         sys.exit(0)
 
     project_path = Path(sys.argv[1]).resolve()
