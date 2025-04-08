@@ -1,0 +1,5 @@
+# Incluir los archivos JSON de plantillas
+recursive-include littlefscli/templates *.json
+
+# Incluir README.md en el paquete
+include README.md
