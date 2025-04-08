@@ -49,6 +49,13 @@ shell_cmd = "powershell" if platform == "windows" else "bash"
 port_var = "${config:idf.portWin}" if platform == "windows" else "${config:idf.port}"
 escaped_export_script = escape_json_string(export_script)
 
+print("📍 Project directory:", project_path)
+print("📄 Config file:", config_path)
+print("🧠 Platform:", platform)
+print("💻 Shell:", shell_cmd)
+print("🔗 Export script:", export_script)
+print("")
+
 # --- Load base template (as raw text) ---
 with open(base_template_path, "r", encoding="utf-8") as f:
     base_template_text = f.read()
@@ -61,7 +68,7 @@ rendered_base = base_template.safe_substitute(
 )
 final_tasks = json.loads(rendered_base)
 
-# --- Load partition template (text template) ---
+# --- Load partition template ---
 with open(partition_template_path, "r", encoding="utf-8") as f:
     partition_template_raw = f.read()
 
@@ -72,6 +79,8 @@ vscode_dir = project_path / ".vscode"
 vscode_dir.mkdir(exist_ok=True)
 
 # --- Handle partitions ---
+print("🧩 Checking LittleFS partitions...")
+
 for section in config.sections():
     if not section.startswith("LittleFS_"):
         continue
@@ -81,13 +90,16 @@ for section in config.sections():
     tag = config.get(section, "tag", fallback="")
 
     if not label or not directory:
-        print(f"⚠️  Skipping section [{section}] due to missing label or dir")
+        print(f"⚠️  Skipping [{section}] due to missing 'partition_label' or 'partition_dir'")
         continue
 
     full_dir = project_path / directory
     if not full_dir.exists():
         full_dir.mkdir(parents=True)
         (full_dir / "README.txt").write_text(f"# Files for LittleFS [{section}]\n", encoding="utf-8")
+        print(f"📁 Created directory: {directory}")
+    else:
+        print(f"📦 Directory already exists: {directory}")
 
     rendered_task = partition_template.safe_substitute(
         SHELL=shell_cmd,
@@ -100,7 +112,9 @@ for section in config.sections():
 
     cmake_append += f'    littlefs_create_partition_image({label} "{directory}" FLASH_AS_IMAGE)\n'
 
-# --- Write tasks.json ---
+print("✅ All partitions processed.\n")
+
+# --- Write tasks.json with emojis preserved ---
 tasks_json_path = vscode_dir / "tasks.json"
 with open(tasks_json_path, "w", encoding="utf-8") as f:
     json.dump({
@@ -108,12 +122,12 @@ with open(tasks_json_path, "w", encoding="utf-8") as f:
         "tasks": final_tasks
     }, f, indent=2, ensure_ascii=False)
 
-print(f"✅ tasks.json created at {tasks_json_path}")
+print(f"🧾 tasks.json written to: {tasks_json_path}")
 
 # --- Patch CMakeLists.txt if needed ---
 cmake_file = project_path / "CMakeLists.txt"
 if not cmake_file.exists():
-    print(f"⚠️ Warning: CMakeLists.txt not found at {cmake_file}, skipping patch.")
+    print(f"⚠️  CMakeLists.txt not found at {cmake_file}, skipping patch.")
 else:
     cmake_content = cmake_file.read_text(encoding="utf-8")
     if "littlefs_create_partition_image" in cmake_content:
@@ -126,6 +140,6 @@ else:
             "endif()\n"
         )
         cmake_file.write_text(cmake_content + patch, encoding="utf-8")
-        print("✅ CMakeLists.txt updated.")
+        print("🔧 CMakeLists.txt updated with LittleFS support.")
 
-print("🏁 Done!")
+print("\n🏁 All done. You're ready to roll 🚀")
