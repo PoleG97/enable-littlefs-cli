@@ -38,12 +38,10 @@ git clone https://github.com/YOUR_USER/esp_littlefs_cli.git
 cd esp_littlefs_cli
 pip install .
 ```
-### 💡 Or use pipx (recommended)
+### 💡 Or use `pipx` (recommended)
 
 ```bash
 pipx install /path/to/esp_littlefs_cli
-# or if it's in Git:
-pipx install git+https://github.com/YOUR_USER/esp_littlefs_cli.git
 ```
 
 ---
@@ -143,21 +141,32 @@ enable-littlefs . .vscode/partition.ini
 - Patches your `CMakeLists.txt` with `littlefs_create_partition_image(...)` only once
 - Detects and skips existing config to avoid duplication
 
+### ⚙️ Expected output
 
----
+Even `enable-littlefs project/path` or `enable-littlefs project/path config/path`
 
-## 📦 Advanced
+#### Case with archives folders already created
 
-Want to extend it? Just clone the repo, tweak the templates or logic, then reinstall:
+```
+📍 Project directory: /.../
+📄 Config file: /.../xxxx.ini
+🧠 Platform: /.../
+💻 Shell: /.../
+🔗 Export script: /.../
 
-```bash
-pip install .
-# or
-pipx install --force .
+🧩 Checking LittleFS partitions...
+📦 Directory already exists: littlefs_data
+📦 Directory already exists: littlefs_user
+✅ All partitions processed.
+
+🧾 tasks.json written to: /.../
+✅ CMakeLists.txt already contains LittleFS logic.
+
+🏁 All done. You're ready to roll 🚀
 ```
 
 
----
+
 
 ## 🧠 Author
 
