@@ -20,7 +20,7 @@ setup(
         ]
     },
     package_data={
-        'littlefscli': ['templates/*.json']
+        'littlefscli': ['templates/*.json', 'config.ini']
     },
     classifiers=[
         "Programming Language :: Python :: 3",

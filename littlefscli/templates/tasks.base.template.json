@@ -1,6 +1,6 @@
 [
   {
-    "label": "🏗️ Build firmware (app only)",
+    "label": "🛠️ Build firmware (app only)",
     "type": "shell",
     "command": "${SHELL}",
     "args": [
@@ -17,12 +17,29 @@
     "problemMatcher": []
   },
   {
+    "label": "⚙️ Build full (app + LittleFS)",
+    "type": "shell",
+    "command": "${SHELL}",
+    "args": [
+      "${COMMAND_FLAG}",
+      "$env:LFS_BUILD='1'; ${EXPORT_WRAPPER} '${EXPORT_SCRIPT}'; idf.py build"
+    ],
+    "options": {
+      "cwd": "${workspaceFolder}"
+    },
+    "group": {
+      "kind": "build",
+      "isDefault": false
+    },
+    "problemMatcher": []
+  },  
+  {
     "label": "💣 Flash full (firmware + LittleFS)",
     "type": "shell",
     "command": "${SHELL}",
     "args": [
       "${COMMAND_FLAG}",
-      "$env:LFS_BUILD='1'; ${EXPORT_WRAPPER} '${EXPORT_SCRIPT}'; idf.py -p ${PORT} flash"
+      "${EXPORT_WRAPPER} '${EXPORT_SCRIPT}'; idf.py -p ${PORT} flash"
     ],
     "options": {
       "cwd": "${workspaceFolder}"
