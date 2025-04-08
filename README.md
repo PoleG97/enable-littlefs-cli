@@ -1,108 +1,165 @@
-# 🧰 ESP-IDF LittleFS Configurator
+# 🧰 ESP-IDF LittleFS CLI Tool
 
-This project provides a set of tools to **quickly configure a LittleFS partition** in an **ESP-IDF-based project**, including:
+This project provides a modern **Python CLI tool** to **quickly configure LittleFS partitions** in **ESP-IDF projects**, including:
 
-- ✅ Automatic creation of the files folder
+- ✅ Automatic creation of partition data folders
 - ✅ Generation of `tasks.json` for Visual Studio Code
-- ✅ Insertion of LittleFS support into `CMakeLists.txt`
+- ✅ Safe insertion of LittleFS support in `CMakeLists.txt`
+- ✅ 🧠 Smart platform detection (Windows/Linux)
 
 > [!WARNING]  
-> This script is intended for ESP-IDF projects using CMake.  
-> Currently supported only on UNIX-like environments (Linux, WSL, Git Bash).
+> Requires Python 3.6+ and ESP-IDF installed in your system
 
 ---
 
 ## 📁 Project Structure
 
 ```
-esp_littlefs_config/ 
-├── enable_littlefs.sh  # Main configuration script 
-├── tasks.template.json # Template to generate tasks.json 
-├── config.ini          # Project-specific configuration 
-└── README.md           # This file
+esp_littlefs_cli/
+├── littlefscli/
+│   ├── enable_littlefs.py       # Main CLI logic (with def main())
+│   ├── config.ini               # Example config
+│   └── templates/
+│       ├── tasks.base.template.json
+│       └── task.partition.template.json
+├── setup.py                     # Installation config
+├── README.md                    # This file
+└── MANIFEST.in                  # Includes templates in package
 ```
 
+---
+
+## 🚀 Installation
+
+### 📦 Install globally with `pip`
+
+```bash
+git clone https://github.com/YOUR_USER/esp_littlefs_cli.git
+cd esp_littlefs_cli
+pip install .
+```
+### 💡 Or use pipx (recommended)
+
+```bash
+pipx install /path/to/esp_littlefs_cli
+# or if it's in Git:
+pipx install git+https://github.com/YOUR_USER/esp_littlefs_cli.git
+```
 
 ---
 
-## 🧪 Requirements
+## ⚙️ Configuration (`config.ini`)
 
-- ESP-IDF installed and accessible in the environment
-- Using VSCode (or manually edit `tasks.json`)
-- **Bash-compatible environment**:
-  - Linux
-  - WSL (Windows Subsystem for Linux)
-  - Git Bash
-
----
-
-## ⚙️ Initial Setup
-
-Edit the `config.ini` file with your project parameters:
+Create or edit a config file like this:
 
 ```ini
 [LittleFS]
-partition_label = littlefs
-partition_dir = littlefs_data
 platform = windows
 export_script = C:\Users\YOUR_USER\Espressif\v5.4\esp-idf\export.ps1
+
+[LittleFS_interna]
+partition_label = littlefs_chip
+partition_dir = littlefs_data
+tag = INTERNOS (chip)
+
+[LittleFS_externa]
+partition_label = littlefs_user
+partition_dir = littlefs_user
+tag = EXTERNOS (user)
 ```
-> [!IMPORTANT]  
-> Change `export_script` with your path, It'll works on linux too
 
 ### Parameters
 
-| Clave             | Descripción                                           |
-|-------------------|-------------------------------------------------------|
-| `partition_label` | Etiqueta de la partición en `partitions.csv`          |
-| `partition_dir`   | Carpeta donde se almacenarán los archivos a subir     |
-| `platform`        | Solo `windows` o `linux` (afecta al nombre del puerto en `tasks.json`) |
-| `export_script`   | Ruta absoluta al script de export de entorno de ESP-IDF |
+| Key                | Description |
+|--------------------|-------------|
+| `platform`         | `windows` or `linux` (affects VSCode task port) |
+| `export_script`    | Absolute path to the ESP-IDF export script|
+| `partition_label`  | Name of the partition (e.g., `littlefs`) |
+| `partition_dir`    | Folder with files to flash |
+| `tag`              | Friendly name for VSCode task label |
 
-# 🚀 How to Use
-Run the script by passing your ESP-IDF project path:
+> [!IMPORTANT]  
+> `export_script` should point to the ESP-IDF export script, usually located in the installation path (`export.ps1` or `export.sh`).  
+> `partition_label` and `partition_dir` must match your `partitions.csv` entries and your code's mount points.
+
+
+> [!CAUTION]
+> Before it, don't forget execute `install.ps1` or `install.sh` from your terminal
+
+---
+
+## 🧪 Usage
+
+Once installed, simply run:
 
 ```bash
-./enable_littlefs.sh /path/to/your/project
+enable-littlefs /path/to/your/project [.vscode/partition.ini]
 ```
 
-> [!TIP]
-> If you create an alias to this script or include it in your path, you can run it from your project directory using . as the path.
+> [!NOTE]  
+> `.vscode/partition.ini` is optional. If not provided, the tool will use `config.ini` from the CLI script's directory.
 
-## This script:
 
-🆕 Creates the littlefs_data/ folder if it doesn’t exist
+✅ The tool will:
 
-✍️ Modifies CMakeLists.txt only if it doesn’t already contain a littlefs_create_partition_image(...) block
+- Create `littlefs_data/`, `littlefs_user/`, etc. if missing  
+- Generate `.vscode/tasks.json` based on templates  
+- Patch `CMakeLists.txt` with `littlefs_create_partition_image(...)` only if not already present
 
-🧠 Generates .vscode/tasks.json with ready-to-use ESP-IDF commands
+---
 
-# 🖥️ Notes on Windows and PowerShell
-There is no official support for PowerShell.
-It is recommended to use WSL or Git Bash to run the .sh script.
+## 💻 Platform Support
 
-##  Platforms:
+✅ Native Linux  
+✅ Windows (Git Bash or WSL)
+✅ PowerShell (via proper platform config)  
+✅ macOS
 
-✅ Native Linux
+---
 
-✅ Windows (WSL)
+## 🧼 What if it's already configured?
 
-✅ Windows (Git Bash)
+- The CLI detects and skips existing `tasks.json` or CMake blocks.
+- It won't overwrite anything unless needed.
+- It’s safe to run multiple times.
 
-❌ Native Windows (PowerShell)
+---
 
-# 🧼 What if I’ve already configured it?
-The script checks if tasks.json or the CMake block already exist, and won’t overwrite them if they do.
+## 🧠 Real-world Example
 
-# 🧠 Real Example of Use
-Let’s say you want to add LittleFS support to a new project. Just do:
+Let’s say you want to set this up in an existing ESP-IDF project:
 
 ```bash
-cp -r esp_littlefs_config/ ~/esp/myproject/tools/
 cd ~/esp/myproject
-../tools/esp_littlefs_config/enable_littlefs.sh .
+enable-littlefs . .vscode/partition.ini
 ```
-And that’s it!
 
-But hey, that’s just one way—I personally have it aliased, but that’s up to you.
+### 🔍 What does this tool actually do?
 
+- Parses your config `.ini` file
+- Creates folders if they don’t exist
+- Loads task templates and injects parameters
+- Generates `.vscode/tasks.json` with proper flash commands
+- Patches your `CMakeLists.txt` with `littlefs_create_partition_image(...)` only once
+- Detects and skips existing config to avoid duplication
+
+
+---
+
+## 📦 Advanced
+
+Want to extend it? Just clone the repo, tweak the templates or logic, then reinstall:
+
+```bash
+pip install .
+# or
+pipx install --force .
+```
+
+
+---
+
+## 🧠 Author
+
+Created by [PoleG97](https://github.com/PoleG97)  
+Maintained as a CLI tool with ❤️ and Python power.
