@@ -1,14 +1,29 @@
 #!/bin/bash
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CONFIG_FILE="${SCRIPT_DIR}/config.ini"
 BASE_TEMPLATE="${SCRIPT_DIR}/tasks.base.template.json"
 PARTITION_TEMPLATE="${SCRIPT_DIR}/task.partition.template.json"
 
+# Verify if the script has proyect path as argument
 if [ -z "$1" ]; then
     echo "❌ Uso: $0 /ruta/al/proyecto"
     exit 1
 fi
+
+# Determinate if the second argument is provided, otherwise use default config file
+if [ -z "$2" ]; then
+    echo "❌ No se ha proporcionado un archivo de configuración. Usando el predeterminado."
+    CONFIG_FILE="${SCRIPT_DIR}/config.ini"
+else
+    CONFIG_FILE="$2"
+    if [ ! -f "$2" ]; then
+        echo "❌ El archivo de configuración no existe: $2"
+        exit 1
+    else
+        echo "✅ Archivo de configuración encontrado: $2"
+    fi
+fi
+
 
 PROJECT_DIR="$(cd "$1" && pwd)"
 CMAKE_FILE="${PROJECT_DIR}/CMakeLists.txt"
