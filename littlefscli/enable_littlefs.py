@@ -7,7 +7,7 @@ from pathlib import Path
 from string import Template
 
 def show_help():
-    print("Usage: enable_littlefs.py /path/to/project [config_file.ini]\n")
+    print("Usage: enable-littlefs.py /path/to/project [config_file.ini]\n")
     print("Generates VSCode tasks.json and adds LittleFS support to CMakeLists.txt.\n")
     print("Arguments:")
     print("  /path/to/project         Path to the ESP-IDF project")
@@ -24,8 +24,9 @@ def main():
 
     project_path = Path(sys.argv[1]).resolve()
     config_path = Path(sys.argv[2]) if len(sys.argv) >= 3 else Path(__file__).parent / "config.ini"
-    base_template_path = Path(__file__).parent / "tasks.base.template.json"
-    partition_template_path = Path(__file__).parent / "task.partition.template.json"
+    base_template_path = Path(__file__).parent / "templates" / "tasks.base.template.json"
+    partition_template_path = Path(__file__).parent / "templates" / "task.partition.template.json"
+
 
     if not config_path.exists():
         print(f"❌ Error: Config file not found: {config_path}")
