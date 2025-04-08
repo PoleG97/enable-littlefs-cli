@@ -1,7 +1,7 @@
 {
     "label": "🔗 Flash solo archivos LittleFS - __TAG__",
     "type": "shell",
-    "command": "powershell",
+    "command": "__SHELL__",
     "args": [
       "-Command",
       "& '__EXPORT_SCRIPT__'; idf.py -p __PORT__ __PARTITION_LABEL__-flash"

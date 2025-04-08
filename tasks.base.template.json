@@ -4,7 +4,7 @@
       {
         "label": "🏗️ Build firmware (solo app)",
         "type": "shell",
-        "command": "powershell",
+        "command": "__SHELL__",
         "args": [
           "-Command",
           "& '__EXPORT_SCRIPT__'; idf.py build"
@@ -21,7 +21,7 @@
       {
         "label": "💣 Flash completo (firmware + LittleFS)",
         "type": "shell",
-        "command": "powershell",
+        "command": "__SHELL__",
         "args": [
           "-Command",
           "$env:LFS_BUILD='1'; & '__EXPORT_SCRIPT__'; idf.py -p __PORT__ flash"
@@ -34,7 +34,7 @@
       {
         "label": "🖥️ Monitor serie",
         "type": "shell",
-        "command": "powershell",
+        "command": "__SHELL__",
         "args": [
           "-Command",
           "& '__EXPORT_SCRIPT__'; idf.py -p __PORT__ monitor"
@@ -47,7 +47,7 @@
       {
         "label": "🧼 Borrado completo de la flash",
         "type": "shell",
-        "command": "powershell",
+        "command": "__SHELL__",
         "args": [
           "-Command",
           "& '__EXPORT_SCRIPT__'; idf.py -p __PORT__ erase-flash"
