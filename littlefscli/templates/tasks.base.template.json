@@ -1,0 +1,32 @@
+[
+  {
+    "label": "🏗️ Build firmware (app only)",
+    "type": "shell",
+    "command": "${SHELL}",
+    "args": [
+      "-Command",
+      "& '${EXPORT_SCRIPT}'; idf.py build"
+    ],
+    "options": {
+      "cwd": "${workspaceFolder}"
+    },
+    "group": {
+      "kind": "build",
+      "isDefault": true
+    },
+    "problemMatcher": []
+  },
+  {
+    "label": "💣 Flash full (firmware + LittleFS)",
+    "type": "shell",
+    "command": "${SHELL}",
+    "args": [
+      "-Command",
+      "$env:LFS_BUILD='1'; & '${EXPORT_SCRIPT}'; idf.py -p ${PORT} flash"
+    ],
+    "options": {
+      "cwd": "${workspaceFolder}"
+    },
+    "problemMatcher": []
+  }
+]
