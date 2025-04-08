@@ -6,38 +6,38 @@ PARTITION_TEMPLATE="${SCRIPT_DIR}/task.partition.template.json"
 
 # Help
 show_help() {
-    echo "Uso: $0 /ruta/al/proyecto [archivo_config.ini]"
+    echo "Usage: $0 /path/to/project [config_file.ini]"
     echo ""
-    echo "Este script genera automáticamente tasks.json y añade soporte a LittleFS en CMakeLists.txt."
+    echo "This script automatically generates tasks.json and adds LittleFS support to CMakeLists.txt."
     echo ""
-    echo "Parámetros:"
-    echo "  /ruta/al/proyecto        Ruta al directorio del proyecto ESP-IDF"
-    echo "  [archivo_config.ini]     (Opcional) Ruta al archivo .ini de configuración a usar"
+    echo "Parameters:"
+    echo "  /path/to/project         Path to the ESP-IDF project directory"
+    echo "  [config_file.ini]        (Optional) Path to the .ini configuration file to use"
     echo ""
-    echo "Si no se proporciona el segundo parámetro, se usará el archivo config.ini que esté junto al script."
+    echo "If the second parameter is not provided, the config.ini file located next to the script will be used."
     exit 0
 }
 
-# Mostrar ayuda
+# Show help if the first argument is --help or -h
 [[ "$1" == "--help" || "$1" == "-h" ]] && show_help
 
 # Verify if the script has proyect path as argument
 if [ -z "$1" ]; then
-    echo "❌ Uso: $0 /ruta/al/proyecto"
+    echo "❌ Usage: $0 /path/to/project"
     exit 1
 fi
 
-# Determinate if the second argument is provided, otherwise use default config file
+# Determine if the second argument is provided, otherwise use the default config file
 if [ -z "$2" ]; then
-    echo "❌ No se ha proporcionado un archivo de configuración. Usando el predeterminado."
+    echo "❌ No configuration file provided. Using the default one."
     CONFIG_FILE="${SCRIPT_DIR}/config.ini"
 else
     CONFIG_FILE="$2"
     if [ ! -f "$2" ]; then
-        echo "❌ El archivo de configuración no existe: $2"
+        echo "❌ The configuration file does not exist: $2"
         exit 1
     else
-        echo "✅ Archivo de configuración encontrado: $2"
+        echo "✅ Configuration file found: $2"
     fi
 fi
 
@@ -73,44 +73,45 @@ else
     PORT_VAR="\${config:idf.port}"
 fi
 
-echo "📍 Proyecto: $PROJECT_DIR"
-echo "🧠 Plataforma: $PLATFORM"
-echo "🔗 Script de export: $EXPORT_SCRIPT"
+echo "📍 Project: $PROJECT_DIR"
+echo "🧠 Platform: $PLATFORM"
+echo "🔗 Export script: $EXPORT_SCRIPT"
 echo "💻 Shell: $SHELL_CMD"
 echo ""
 
 mkdir -p "$VSCODE_DIR"
 
-# Crear una lista temporal para tareas
+# Create a temporary list for tasks
 ALL_TASKS=()
 
-# Añadir tareas base (como bloque)
+# Add base tasks (as a block)
 BASE_CONTENT=$(sed -e "s|__EXPORT_SCRIPT__|$EXPORT_SCRIPT|g" \
                    -e "s|__PORT__|$PORT_VAR|g" \
                    -e "s|__SHELL__|$SHELL_CMD|g" \
                    "$BASE_TEMPLATE")
-# Quitar encabezado y apertura del array
+
+# Remove header and array opening
 BASE_CONTENT=$(echo "$BASE_CONTENT" | sed '1d;$d')
 ALL_TASKS+=("$BASE_CONTENT")
 
-# Instrucciones para CMakeLists
+# Instructions for CMakeLists
 PARTITION_LINES=""
 
-# Procesar particiones dinámicamente
+# Process partitions dynamically
 for section in $(awk '/\\[LittleFS_/{gsub(/\\[|\\]/,""); print $1}' "$CONFIG_FILE"); do
     PARTITION_LABEL=$(parse_ini "$section" "partition_label")
     PARTITION_DIR=$(parse_ini "$section" "partition_dir")
     TAG=$(parse_ini "$section" "tag")
     PARTITION_PATH="${PROJECT_DIR}/${PARTITION_DIR}"
 
-    echo "📦 Partición [$section]: $PARTITION_LABEL → $PARTITION_PATH"
+    echo "📦 Partition [$section]: $PARTITION_LABEL → $PARTITION_PATH"
 
     if [ ! -d "$PARTITION_PATH" ]; then
-        echo "📁 Creando carpeta: $PARTITION_DIR/"
+        echo "📁 Creating folder: $PARTITION_DIR/"
         mkdir -p "$PARTITION_PATH"
         echo "# Files to LittleFS" > "${PARTITION_PATH}/README.txt"
     else
-        echo "📁 Carpeta ${PARTITION_DIR}/ ya existe."
+        echo "📁 Folder ${PARTITION_DIR}/ exists."
     fi
 
     PARTITION_TASK=$(sed -e "s|__PORT__|$PORT_VAR|g" \
@@ -137,9 +138,9 @@ done
 
 # Modificar CMakeLists.txt si es necesario
 if grep -q "littlefs_create_partition_image" "$CMAKE_FILE"; then
-    echo "✅ CMakeLists.txt ya contiene instrucciones LittleFS."
+    echo "✅ CMakeLists.txt already contains LittleFS instructions."
 else
-    echo "➕ Añadiendo soporte LittleFS al CMakeLists.txt"
+    echo "➕ Adding LittleFS support to CMakeLists.txt"
     {
         echo ""
         echo "# Support to LittleFS"
@@ -149,4 +150,5 @@ else
     } >> "$CMAKE_FILE"
 fi
 
-echo "✅ ¡Completado! tasks.json generado correctamente."
+echo "✅ Completed! tasks.json successfully generated."
+
