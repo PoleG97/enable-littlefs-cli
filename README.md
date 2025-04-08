@@ -34,14 +34,16 @@ esp_littlefs_cli/
 ### 📦 Install globally with `pip`
 
 ```bash
-git clone https://github.com/YOUR_USER/esp_littlefs_cli.git
+git clone https://github.com/...
 cd esp_littlefs_cli
 pip install .
 ```
 ### 💡 Or use `pipx` (recommended)
 
 ```bash
-pipx install /path/to/esp_littlefs_cli
+git clone https://github.com/...
+cd esp_littlefs_cli
+pipx install /.
 ```
 
 ---
@@ -98,28 +100,32 @@ enable-littlefs /path/to/your/project [.vscode/partition.ini]
 > `.vscode/partition.ini` is optional. If not provided, the tool will use `config.ini` from the CLI script's directory.
 
 
-✅ The tool will:
+### What it does:
+- 📁 Creates missing littlefs_* directories
 
-- Create `littlefs_data/`, `littlefs_user/`, etc. if missing  
-- Generate `.vscode/tasks.json` based on templates  
-- Patch `CMakeLists.txt` with `littlefs_create_partition_image(...)` only if not already present
+- 🧠 Generates .vscode/tasks.json with correct build targets
+
+- 📌 Patches CMakeLists.txt only if needed (non-invasive)
 
 ---
 
 ## 💻 Platform Support
 
 ✅ Native Linux  
-✅ Windows (Git Bash or WSL)
-✅ PowerShell (via proper platform config)  
+✅ Windows 
 ✅ macOS
 
 ---
 
-## 🧼 What if it's already configured?
+## ♻️ Idempotency
 
-- The CLI detects and skips existing `tasks.json` or CMake blocks.
-- It won't overwrite anything unless needed.
-- It’s safe to run multiple times.
+The CLI safely detects existing configurations:
+
+- Skips tasks.json if already configured
+
+- Avoids duplicate entries in CMakeLists.txt
+
+- Can be re-run without side effects
 
 ---
 
@@ -132,14 +138,6 @@ cd ~/esp/myproject
 enable-littlefs . .vscode/partition.ini
 ```
 
-### 🔍 What does this tool actually do?
-
-- Parses your config `.ini` file
-- Creates folders if they don’t exist
-- Loads task templates and injects parameters
-- Generates `.vscode/tasks.json` with proper flash commands
-- Patches your `CMakeLists.txt` with `littlefs_create_partition_image(...)` only once
-- Detects and skips existing config to avoid duplication
 
 ### ⚙️ Expected output
 
@@ -165,7 +163,11 @@ Even `enable-littlefs project/path` or `enable-littlefs project/path config/path
 🏁 All done. You're ready to roll 🚀
 ```
 
+# 📄 License
+This project is licensed under the MIT License.
 
+# 🙌 Contributing
+Contributions are welcome! Feel free to open issues or pull requests for bugs, features, or improvements. Just make sure you follow standard Python formatting and write clear commit messages.
 
 
 ## 🧠 Author
