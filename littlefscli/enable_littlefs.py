@@ -127,7 +127,23 @@ def main():
     with open(base_template_path, "r", encoding="utf-8") as f:
         base_template_text = f.read()
 
+    # Find all LittleFS partition labels in the config file
+    partitions_info = [
+        {
+            "section": section,
+            "label": config.get(section, "partition_label"),
+            "directory": config.get(section, "partition_dir"),
+            "tag": config.get(section, "tag", fallback=""),
+        }
+        
+        for section in config.sections()
+        if section.startswith("LittleFS_")
+        and config.get(section, "partition_label", fallback=None)
+        and config.get(section, "partition_dir", fallback=None)
+    ]
+
     # List of partition labels with command to flash all LittleFS partitions
+    partition_labels = [p["label"] for p in partitions_info]
     flash_all_littlefs = " ".join(f"{label}-flash" for label in partition_labels)
 
     # Substitute variables in the base template (tasks.base.template.json)
@@ -151,28 +167,19 @@ def main():
     cmake_append = ""
     vscode_dir = project_path / ".vscode"
     vscode_dir.mkdir(exist_ok=True)
-    partition_labels = []
 
     print("🧩 Checking LittleFS partitions...")
 
     # Iterate through the sections in the config file to find LittleFS partitions
-    for section in config.sections():
-        if not section.startswith("LittleFS_"):
-            continue
-
-        label = config.get(section, "partition_label", fallback=None)
-        directory = config.get(section, "partition_dir", fallback=None)
-        tag = config.get(section, "tag", fallback="")
-        partition_labels.append(label)
-
-        if not label or not directory:
-            print(f"⚠️  Skipping [{section}] due to missing 'partition_label' or 'partition_dir'")
-            continue
+    for part in partitions_info:
+        label = part["label"]
+        directory = part["directory"]
+        tag = part["tag"]
 
         full_dir = project_path / directory
         if not full_dir.exists():
             full_dir.mkdir(parents=True)
-            (full_dir / "README.txt").write_text(f"# Files for LittleFS [{section}]\n", encoding="utf-8")
+            (full_dir / "README.txt").write_text(f"# Files for LittleFS [{label}]\n", encoding="utf-8")
             print(f"📁 Created directory: {directory}")
         else:
             print(f"📦 Directory already exists: {directory}")
