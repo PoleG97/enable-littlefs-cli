@@ -117,7 +117,7 @@ def main():
     export_wrapper = "&" if platform == "windows" else "."
 
     # Adapt env variables based on the platform
-    env_var_wraper = "$env:LFS_BUILD='1';" if platform == "windows" else "LFS_BUILD=1;"
+    env_var_wrapper = "$env:LFS_BUILD='1';" if platform == "windows" else "export LFS_BUILD=1;"
 
     # User feedback
     print("📍 Project directory:", project_path)
@@ -162,7 +162,7 @@ def main():
         EXPORT_SCRIPT=escaped_export_script,
         COMMAND_FLAG=command_flag,
         EXPORT_WRAPPER=export_wrapper,
-        ENV_VAR_WRAPER=env_var_wraper
+        ENV_VAR_WRAPPER=env_var_wrapper
     )
     final_tasks = json.loads(rendered_base)
 
