@@ -34,17 +34,20 @@
     "problemMatcher": []
   },
   {
-    "label": "💣 Flash firmware + todas las LFS",
+    "label": "💾 Flash app (sin LittleFS)",
     "type": "shell",
     "command": "${SHELL}",
     "args": [
       "${COMMAND_FLAG}",
-      "${EXPORT_WRAPPER} '${EXPORT_SCRIPT}'; idf.py -p ${PORT} flash ${FLASH_ALL_LITTLEFS}"
+      "${EXPORT_WRAPPER} '${EXPORT_SCRIPT}'; idf.py -p ${PORT} flash"
     ],
     "options": {
       "cwd": "${workspaceFolder}"
     },
+    "group": {
+      "kind": "build",
+      "isDefault": false
+    },
     "problemMatcher": []
-  }
-  
+  }  
 ]

@@ -144,7 +144,12 @@ def main():
 
     # List of partition labels with command to flash all LittleFS partitions
     partition_labels = [p["label"] for p in partitions_info]
-    flash_all_littlefs = " ".join(f"{label}-flash" for label in partition_labels)
+    idf_base = f"idf.py -p {port_var}"
+    flash_all_littlefs = (
+        f"{idf_base} build && "
+        f"{idf_base} flash && " +
+        " && ".join(f"{idf_base} {label}-flash" for label in partition_labels)
+    )
 
     # Substitute variables in the base template (tasks.base.template.json)
     base_template = Template(base_template_text)

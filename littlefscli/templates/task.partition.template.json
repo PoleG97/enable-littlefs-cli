@@ -11,18 +11,5 @@
       "cwd": "${workspaceFolder}"
     },
     "problemMatcher": []
-  },
-  {
-    "label": "🗑️ Erase LittleFS partition - ${TAG}",
-    "type": "shell",
-    "command": "${SHELL}",
-    "args": [
-      "${COMMAND_FLAG}",
-      "${EXPORT_WRAPPER} '${EXPORT_SCRIPT}'; idf.py -p ${PORT} erase_partition ${PARTITION_LABEL}"
-    ],
-    "options": {
-      "cwd": "${workspaceFolder}"
-    },
-    "problemMatcher": []
   }
 ]
