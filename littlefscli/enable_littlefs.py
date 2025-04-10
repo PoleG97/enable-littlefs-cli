@@ -116,6 +116,9 @@ def main():
     command_flag = "-Command" if platform == "windows" else "-c"
     export_wrapper = "&" if platform == "windows" else "."
 
+    # Adapt env variables based on the platform
+    env_var_wraper = "$env:LFS_BUILD='1';" if platform == "windows" else "LFS_BUILD=1;"
+
     # User feedback
     print("📍 Project directory:", project_path)
     print("📄 Config file:", config_path)
@@ -143,13 +146,13 @@ def main():
     ]
 
     # List of partition labels with command to flash all LittleFS partitions
-    partition_labels = [p["label"] for p in partitions_info]
-    idf_base = f"idf.py -p {port_var}"
-    flash_all_littlefs = (
-        f"{idf_base} build && "
-        f"{idf_base} flash && " +
-        " && ".join(f"{idf_base} {label}-flash" for label in partition_labels)
-    )
+    # partition_labels = [p["label"] for p in partitions_info]
+    # idf_base = f"idf.py -p {port_var}"
+    # flash_all_littlefs = (
+    #     f"{idf_base} build && "
+    #     f"{idf_base} flash && " +
+    #     " && ".join(f"{idf_base} {label}-flash" for label in partition_labels)
+    # )
 
     # Substitute variables in the base template (tasks.base.template.json)
     base_template = Template(base_template_text)
@@ -159,7 +162,7 @@ def main():
         EXPORT_SCRIPT=escaped_export_script,
         COMMAND_FLAG=command_flag,
         EXPORT_WRAPPER=export_wrapper,
-        FLASH_ALL_LITTLEFS=flash_all_littlefs,
+        ENV_VAR_WRAPER=env_var_wraper
     )
     final_tasks = json.loads(rendered_base)
 

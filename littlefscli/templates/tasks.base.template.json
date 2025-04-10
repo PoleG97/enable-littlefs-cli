@@ -22,7 +22,7 @@
     "command": "${SHELL}",
     "args": [
       "${COMMAND_FLAG}",
-      "$env:LFS_BUILD='1'; ${EXPORT_WRAPPER} '${EXPORT_SCRIPT}'; idf.py build"
+      "${ENV_VAR_WRAPPER} ${EXPORT_WRAPPER} '${EXPORT_SCRIPT}'; idf.py build"
     ],
     "options": {
       "cwd": "${workspaceFolder}"
