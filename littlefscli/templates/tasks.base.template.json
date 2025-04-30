@@ -1,6 +1,6 @@
 [
   {
-    "label": "🛠️ Build firmware (app only)",
+    "label": "🛠️ Build firmware (no littlefs)",
     "type": "shell",
     "command": "${SHELL}",
     "args": [
@@ -17,7 +17,7 @@
     "problemMatcher": []
   },
   {
-    "label": "⚙️ Build full (app + LittleFS)",
+    "label": "⚙️ Build full (firmware + LittleFS)",
     "type": "shell",
     "command": "${SHELL}",
     "args": [
@@ -34,7 +34,7 @@
     "problemMatcher": []
   },
   {
-    "label": "💾 Flash app (sin LittleFS)",
+    "label": "💾 Flash firmware (no LittleFS)",
     "type": "shell",
     "command": "${SHELL}",
     "args": [
