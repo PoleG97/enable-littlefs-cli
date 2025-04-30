@@ -172,7 +172,7 @@ def main():
 
     partition_template = Template(partition_template_raw)
 
-    cmake_append = ""
+    cmake_lfs_partitions = ""
     vscode_dir = project_path / ".vscode"
     vscode_dir.mkdir(exist_ok=True)
 
@@ -210,7 +210,7 @@ def main():
         else:
             final_tasks.append(tasks)  # In case it's a single task
 
-        cmake_append += f'    littlefs_create_partition_image({label} "{directory}" FLASH_AS_IMAGE)\n'
+        cmake_lfs_partitions += f'littlefs_create_partition_image({label} "{directory}" FLASH_AS_IMAGE)\n'
 
     print("✅ All partitions processed.\n")
 
@@ -224,6 +224,13 @@ def main():
 
     print(f"🧾 tasks.json written to: {tasks_json_path}")
 
+    # 🛠️ Escribimos lfs_partitions/CMakeLists.txt
+    lfs_dir = project_path / "lfs_partitions"
+    lfs_dir.mkdir(exist_ok=True)
+    cmake_lfs_path = lfs_dir / "CMakeLists.txt"
+    cmake_lfs_path.write_text(cmake_lfs_partitions, encoding="utf-8")
+    print(f"🛠️ lfs_partitions/CMakeLists.txt written to: {cmake_lfs_path}")
+
     # Check if the CMakeLists.txt file exists and append the LittleFS logic
     cmake_file = project_path / "CMakeLists.txt"
     if not cmake_file.exists():
@@ -232,14 +239,14 @@ def main():
 
         # Check if the CMakeLists.txt already contains LittleFS logic
         cmake_content = cmake_file.read_text(encoding="utf-8")
-        if "littlefs_create_partition_image" in cmake_content:
+        if "add_subdirectory(lfs_partitions)" in cmake_content:
             print("✅ CMakeLists.txt already contains LittleFS logic.")
         else:
             # Append the LittleFS logic to the CMakeLists.txt file
             patch = (
                 "\n# Support to LittleFS\n"
                 "if(DEFINED ENV{LFS_BUILD} AND \"$ENV{LFS_BUILD}\" STREQUAL \"1\")\n"
-                f"{cmake_append}"
+                "    add_subdirectory(lfs_partitions)\n"
                 "endif()\n"
             )
             cmake_file.write_text(cmake_content + patch, encoding="utf-8")

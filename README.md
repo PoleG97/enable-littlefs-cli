@@ -109,6 +109,33 @@ enable-littlefs /path/to/your/project [.vscode/partition.ini]
 
 ---
 
+## 📁 Recommended Folder Structure
+To ensure consistent and error-free builds, place your LittleFS folders (e.g. littlefs_data, littlefs_user) inside the lfs_partitions/ directory created by the tool.
+
+```
+your-project/
+├── lfs_partitions/
+│   ├── CMakeLists.txt               # Auto-generated with partition build logic
+│   ├── littlefs_data/               # Internal files to flash (e.g., config, certs)
+│   └── littlefs_user/               # External/user files to flash
+├── main/
+├── components/
+├── CMakeLists.txt
+└── partitions.csv
+```
+
+### 💡 Why?
+ESP-IDF uses add_subdirectory() to include the partition image generation logic from a dedicated directory.
+By placing the LittleFS data folders inside lfs_partitions/, paths are resolved consistently by CMake, avoiding FileNotFoundError issues due to mismatches between declared paths and actual structure.
+
+> ✅ This approach ensures that you don’t need to modify your partitions.csv file — the build system will correctly find and package the data into the corresponding partition image.
+
+>[!CAUTION]
+> If you switch between builds with and without LittleFS support (e.g. toggling `LFS_BUILD=1`), you must run `idf.py fullclean` to clear the CMake cache. Otherwise, previously cached targets may remain active and cause inconsistencies.
+>💡 This process is **transparent to you** if you're using the generated `tasks.json`, as it handles L`FS_BUILD` configuration automatically.
+
+---
+
 ## 💻 Platform Support
 
 ✅ Native Linux  
