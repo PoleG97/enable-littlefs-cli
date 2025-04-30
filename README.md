@@ -200,4 +200,4 @@ Contributions are welcome! Feel free to open issues or pull requests for bugs, f
 ## 🧠 Author
 
 Created by [PoleG97](https://github.com/PoleG97)  
-Maintained as a CLI tool with ❤️ and Python power.
+Maintained as a CLI tool with ❤️ and 🐍 power.
