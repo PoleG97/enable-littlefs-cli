@@ -145,15 +145,6 @@ def main():
         and config.get(section, "partition_dir", fallback=None)
     ]
 
-    # List of partition labels with command to flash all LittleFS partitions
-    # partition_labels = [p["label"] for p in partitions_info]
-    # idf_base = f"idf.py -p {port_var}"
-    # flash_all_littlefs = (
-    #     f"{idf_base} build && "
-    #     f"{idf_base} flash && " +
-    #     " && ".join(f"{idf_base} {label}-flash" for label in partition_labels)
-    # )
-
     # Substitute variables in the base template (tasks.base.template.json)
     base_template = Template(base_template_text)
     rendered_base = base_template.safe_substitute(
@@ -184,15 +175,6 @@ def main():
         directory = part["directory"]
         tag = part["tag"]
 
-        full_dir = project_path / directory
-        if not full_dir.exists():
-            full_dir.mkdir(parents=True)
-            (full_dir / "README.txt").write_text(f"# Files for LittleFS [{label}]\n", encoding="utf-8")
-            print(f"📁 Created directory: {directory}")
-        else:
-            print(f"📦 Directory already exists: {directory}")
-
-        # Render the partition template with the current section's values
         rendered_tasks = partition_template.safe_substitute(
             SHELL=shell_cmd,
             PORT=port_var,
